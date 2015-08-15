@@ -39,6 +39,7 @@
     function handleDragStart(e, dd) {
       var cell = _grid.getCellFromEvent(e);
 
+
       if (options.cancelEditOnDrag && _grid.getEditorLock().isActive()) {
         _grid.getEditorLock().cancelCurrentEdit();
       }
@@ -76,6 +77,7 @@
           .appendTo(_canvas);
 
       dd.insertBefore = -1;
+
     }
 
     function handleDrag(e, dd) {
@@ -85,10 +87,12 @@
 
       e.stopImmediatePropagation();
 
-      var top = e.pageY - $(_canvas).offset().top;
+      // top offset
+      var top = e.originalEvent.pageY - $(_canvas).offset().top;
       dd.selectionProxy.css("top", top - 5);
 
       var insertBefore = Math.max(0, Math.min(Math.round(top / _grid.getOptions().rowHeight), _grid.getDataLength()));
+      
       if (insertBefore !== dd.insertBefore) {
         var eventData = {
           "rows": dd.selectedRows,
@@ -122,6 +126,8 @@
           "rows": dd.selectedRows,
           "insertBefore": dd.insertBefore
         };
+
+        // console.log("[E]", eventData);
         // TODO:  _grid.remapCellCssClasses ?
         _self.onMoveRows.notify(eventData);
       }

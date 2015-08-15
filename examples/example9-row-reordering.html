@@ -84,9 +84,9 @@
 
 <script src="../lib/jquery-1.11.2.min.js"></script>
 <script src="../lib/jquery-ui-1.11.3.min.js"></script>
-<script src="../lib/jquery.event.drag-2.2.js"></script>
+<!-- <script src="../lib/jquery.event.drag-2.2.js"></script>
 <script src="../lib/jquery.event.drop-2.2.js"></script>
-
+ -->
 <script src="../slick.core.js"></script>
 <script src="../plugins/slick.cellrangeselector.js"></script>
 <script src="../plugins/slick.cellselectionmodel.js"></script>
@@ -174,6 +174,8 @@ $(function () {
   });
 
   moveRowsPlugin.onMoveRows.subscribe(function (e, args) {
+    console.log(e, args);
+
     var extractedRows = [], left, right;
     var rows = args.rows;
     var insertBefore = args.insertBefore;
@@ -280,7 +282,7 @@ $(function () {
     $(dd.available).css("background", "beige");
   });
 
-  $.drop({mode: "mouse"});
+  // $.drop({mode: "mouse"});
   $("#dropzone")
       .bind("dropstart", function (e, dd) {
         if (dd.mode != "recycle") {

@@ -20,9 +20,9 @@
 if (typeof jQuery === "undefined") {
   throw "SlickGrid requires jquery module to be loaded";
 }
-if (!jQuery.fn.drag) {
-  throw "SlickGrid requires jquery.event.drag module to be loaded";
-}
+// if (!jQuery.fn.drag) {
+//   throw "SlickGrid requires jquery.event.drag module to be loaded";
+// }
 if (typeof Slick === "undefined") {
   throw "slick.core.js not loaded";
 }
@@ -1528,7 +1528,7 @@ if (typeof Slick === "undefined") {
         }
       }
 
-      stringArray.push("<div class='" + cellCss + "'>");
+      stringArray.push("<div draggable=\"true\"  class='" + cellCss + "'>");
 
       // if there is a corresponding row (if not, this is the Add New row or this data hasn't been loaded yet)
       if (item) {
@@ -2331,6 +2331,7 @@ if (typeof Slick === "undefined") {
     }
 
     function handleDragInit(e, dd) {
+    	console.log("This isnt called")
       var cell = getCellFromEvent(e);
       if (!cell || !cellExists(cell.row, cell.cell)) {
         return false;
@@ -2346,13 +2347,18 @@ if (typeof Slick === "undefined") {
       return false;
     }
 
-    function handleDragStart(e, dd) {
+    function handleDragStart(e) {
       var cell = getCellFromEvent(e);
       if (!cell || !cellExists(cell.row, cell.cell)) {
         return false;
       }
 
+      var dd = {}
+      $(e.target).data("slick_drag", dd);
       var retval = trigger(self.onDragStart, dd, e);
+      $(e.target).data("slick_drag", dd);
+      
+
       if (e.isImmediatePropagationStopped()) {
         return retval;
       }
@@ -2360,12 +2366,27 @@ if (typeof Slick === "undefined") {
       return false;
     }
 
-    function handleDrag(e, dd) {
-      return trigger(self.onDrag, dd, e);
+    function handleDrag(e) {
+    	//console.log(e);
+    	var evt = e.originalEvent;
+    	if(evt.pageX === 0 && evt.pageY === 0)
+    		return false;
+    	
+
+    	//console.log(e);
+
+    	var dd = $(e.target).data("slick_drag");
+      var retrval = trigger(self.onDrag, dd, e);
+      // console.log(e, dd);
+      $(e.target).data("slick_drag", dd);
+      return retrval;
     }
 
-    function handleDragEnd(e, dd) {
-      trigger(self.onDragEnd, dd, e);
+    function handleDragEnd(e) {
+    	var dd = $(e.target).data("slick_drag");
+      var retrval = trigger(self.onDragEnd, dd, e);
+      $(e.target).removeData("slick_drag");
+      return retrval;
     }
 
     function handleKeyDown(e) {
