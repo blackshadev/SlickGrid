@@ -2330,6 +2330,8 @@ if (typeof Slick === "undefined") {
       }
     }
 
+    // This is not called anymore
+
     function handleDragInit(e, dd) {
     	console.log("This isnt called")
       var cell = getCellFromEvent(e);
@@ -2347,12 +2349,15 @@ if (typeof Slick === "undefined") {
       return false;
     }
 
+
+
     function handleDragStart(e) {
       var cell = getCellFromEvent(e);
       if (!cell || !cellExists(cell.row, cell.cell)) {
         return false;
       }
 
+      // Set a new dd object to store custom data along the drag event
       var dd = {}
       $(e.target).data("slick_drag", dd);
       var retval = trigger(self.onDragStart, dd, e);
@@ -2367,17 +2372,15 @@ if (typeof Slick === "undefined") {
     }
 
     function handleDrag(e) {
-    	//console.log(e);
     	var evt = e.originalEvent;
+    	// The last fired drag event is always completely nulled for some reason, 
+    	// This will mess up the `dd` data, so ignore the last drag event all together.
     	if(evt.pageX === 0 && evt.pageY === 0)
     		return false;
     	
 
-    	//console.log(e);
-
     	var dd = $(e.target).data("slick_drag");
       var retrval = trigger(self.onDrag, dd, e);
-      // console.log(e, dd);
       $(e.target).data("slick_drag", dd);
       return retrval;
     }
